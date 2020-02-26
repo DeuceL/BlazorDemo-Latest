@@ -50,7 +50,7 @@ namespace BlazorCRUD.Concrete
         public Task<List<Article>> ListAll(int skip, int take, string orderBy, string direction = "DESC", string search = "")
         {
             var articles = Task.FromResult(_dapperManager.GetAll<Article>
-                ($"SELECT * FROM [Article] WHERE Title like '%{search}%' ORDER BY {orderBy} {direction} OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ", null, commandType: CommandType.Text));
+                                ($"WITH Artcl AS (SELECT ROW_NUMBER() OVER(ORDER BY a.ID) AS rownumber, * FROM [Article] as a WHERE Title LIKE '%{search}%') SELECT * FROM Artcl WHERE (rownumber > {take} * {skip}) AND (rownumber <= {take} * {skip + 1}) ORDER BY {orderBy} {direction}; ", null, commandType: CommandType.Text));
             return articles;
         }
 

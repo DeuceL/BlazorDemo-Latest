@@ -124,9 +124,10 @@ else
     {
         //display total page buttons
         pagerSize = 3;
-        pageSize = 2;
+        pageSize = 5;
         curPage = 1;
-        articleModel = await articleManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
+
+        articleModel = await articleManager.ListAll((curPage - 1), pageSize, sortColumnName, sortDir, searchTerm);
         totalRecords = await articleManager.Count(searchTerm);
         totalPages = (int)Math.Ceiling(totalRecords / (decimal)pageSize);
         SetPagerSize("forward");
@@ -136,7 +137,7 @@ else
     protected async Task DeleteArticle(int id)
     {
         await articleManager.Delete(id);
-        articleModel = await articleManager.ListAll((curPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
+        articleModel = await articleManager.ListAll((curPage - 1), pageSize, sortColumnName, sortDir, searchTerm);
     }
 
     private bool isSortedAscending;
@@ -144,7 +145,7 @@ else
 
     private async Task<List<Article>> SortRecords(string columnName, string dir)
     {
-        return await articleManager.ListAll((curPage - 1) * pageSize, pageSize, columnName, dir, searchTerm);
+        return await articleManager.ListAll((curPage - 1), pageSize, columnName, dir, searchTerm);
     }
 
     private async Task SortTable(string columnName)
@@ -190,7 +191,7 @@ else
 
     public async Task refreshRecords(int currentPage)
     {
-        articleModel = await articleManager.ListAll((currentPage - 1) * pageSize, pageSize, sortColumnName, sortDir, searchTerm);
+        articleModel = await articleManager.ListAll((currentPage - 1), pageSize, sortColumnName, sortDir, searchTerm);
         curPage = currentPage;
         this.StateHasChanged();
     }
